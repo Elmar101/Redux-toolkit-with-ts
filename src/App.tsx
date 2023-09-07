@@ -51,7 +51,7 @@ export default function App() {
       <div>
         <button onClick={() => dispatch(fetchUser())}> fetch user</button>
         {user.loading && "loading"}
-        {user.error && user.error}
+        {user.error && user.error.toString()}
         {user.data && <div>Name: {JSON.stringify(user.data)}</div>}
       </div>
     </>

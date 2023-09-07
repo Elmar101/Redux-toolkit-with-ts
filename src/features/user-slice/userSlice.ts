@@ -68,31 +68,39 @@ const initialState: UserStae = {
 
 const url = "https://randomuser.me/api/";
 
-const fetchUser = createAsyncThunk<User>("fetchUser", async () => {
-  const response = await axios.get<User>(url);
-  return response;
-});
+const fetchUser = createAsyncThunk<User, undefined, { rejectValue: string }>(
+  "fetchUser",
+  async (_, { rejectWithValue }) => {
+
+      const response = await axios.get<User>(url);
+      if(response.status !== 200) return rejectWithValue("error")
+      return response as User | any;
+   
+   
+  }
+);
 
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchUser.pending, (state, action) => {
-      state.loading = true;
-      state.error = "";
-    });
-    builder.addCase(
-      fetchUser.fulfilled,
-      (state, action: PayloadAction<User>) => {
+    builder
+      .addCase(fetchUser.pending, (state, action) => {
+        state.loading = true;
+        state.error = "";
+      })
+      .addCase(
+        fetchUser.fulfilled,
+        (state, action: PayloadAction<User>) => {
+          state.loading = false;
+          state.data = action.payload;
+        }
+      )
+      .addCase(fetchUser.rejected, (state, action) => {
         state.loading = false;
-        state.data = action.payload;
-      }
-    );
-    builder.addCase(fetchUser.rejected, (state, action) => {
-      state.loading = false;
-      state.error = "Error Fetching user data";
-    });
+        state.error = "Error Fetching user data";
+      });
   }
 });
 
