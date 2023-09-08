@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { bindActionCreators } from "@reduxjs/toolkit";
 import {
   add,
   fetchUser,
@@ -29,11 +30,38 @@ export default function App() {
     dispatch(toggleCompleted(id));
   };
 
+  const fetchUserWithApi = () => {
+    dispatch(fetchUser())
+  };
+  // use BIND ACTION CREATORs
+  const fetchUserWithBindActionCreators = () => {
+    bindActionCreators({fetchUser} , dispatch);
+  };
+  // we can use all action this roles
+  const boundActionCreators = useMemo(
+    () => bindActionCreators({fetchUser, add}, dispatch),
+    [dispatch]
+  );
+
+  const onBindSave = () => {
+    boundActionCreators.add(title);
+    setTitle("");
+  };
+
+  const fetchUserWithBindActionCreatorsMemo = () => {
+    boundActionCreators.fetchUser();
+  };
+
   return (
     <>
       <div className="App">
         <input value={title} onChange={(e) => setTitle(e.target.value)} />
         <button onClick={onSave}> add todo </button>
+      </div>
+      <hr/>
+      <div className="App">
+        <input value={title} onChange={(e) => setTitle(e.target.value)} />
+        <button onClick={onBindSave}> add todo use bind action creators</button>
       </div>
       <div className="App">
         <ul>
@@ -49,7 +77,22 @@ export default function App() {
         </ul>
       </div>
       <div>
-        <button onClick={() => dispatch(fetchUser())}> fetch user</button>
+        <button onClick={fetchUserWithApi}> fetch user</button>
+        {user.loading && "loading"}
+        {user.error && user.error.toString()}
+        {user.data && <div>Name: {JSON.stringify(user.data)}</div>}
+      </div>
+      <hr/>
+      <div>
+        <button onClick={fetchUserWithApi}> fetch user</button>
+        {user.loading && "loading"}
+        {user.error && user.error.toString()}
+        {user.data && <div>Name: {JSON.stringify(user.data)}</div>}
+      </div>
+
+      <hr/>
+      <div>
+        <button onClick={fetchUserWithBindActionCreatorsMemo}> fetch user</button>
         {user.loading && "loading"}
         {user.error && user.error.toString()}
         {user.data && <div>Name: {JSON.stringify(user.data)}</div>}

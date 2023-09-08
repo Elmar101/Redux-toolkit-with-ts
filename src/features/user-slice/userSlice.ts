@@ -70,13 +70,12 @@ const url = "https://randomuser.me/api/";
 
 const fetchUser = createAsyncThunk<User, undefined, { rejectValue: string }>(
   "fetchUser",
-  async (_, { rejectWithValue }) => {
-
+  async (_, { rejectWithValue, getState }) => {
+      console.log("getState is : s" ,getState());
+      
       const response = await axios.get<User>(url);
       if(response.status !== 200) return rejectWithValue("error")
       return response as User | any;
-   
-   
   }
 );
 
