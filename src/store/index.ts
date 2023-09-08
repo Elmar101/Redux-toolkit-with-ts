@@ -6,6 +6,7 @@ import {
   toggleCompleted,
   todoReducer
 } from "../features/todo-slice/todoSlice";
+import { addWithCreateAction  } from "../features/todo-slice/createAction";
 import { userReducer, fetchUser } from "../features/user-slice/userSlice";
 
 const store = configureStore({
@@ -22,4 +23,4 @@ export type AppDispatch = typeof store.dispatch;
 
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-export { add, remove, toggleCompleted, fetchUser };
+export { add, remove, toggleCompleted, fetchUser, addWithCreateAction };
