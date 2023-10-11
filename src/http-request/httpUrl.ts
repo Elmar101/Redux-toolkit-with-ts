@@ -1,0 +1,1 @@
+export const getUserUrl =  "https://randomuser.me/api/";

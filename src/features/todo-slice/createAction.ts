@@ -1,6 +1,6 @@
 import { createAction } from "@reduxjs/toolkit";
 
-const addWithCreateAction = createAction("", (data: string) => {
+const addWithCreateAction = createAction("todos/addTodoWithCreateAction", (data: string) => {
   return {
     payload: data,
   };

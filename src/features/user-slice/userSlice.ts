@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
+import { AxiosError } from "axios";
+import { getUsers } from "../../http-request/usersApiRequest";
 
 export type Name = Record<string, string>;
 export type Coordinates = Record<string, string>;
@@ -52,32 +53,30 @@ export interface Info {
 export interface User {
   result: Result[];
   info: Info;
-}
-
-interface UserStae {
-  data: User | null;
-  loading: boolean;
-  error: string | Record<string, string>;
-}
-
-const initialState: UserStae = {
-  data: null,
-  loading: false,
-  error: ""
 };
 
-const url = "https://randomuser.me/api/";
+interface UserState {
+  data: User | null;
+  loading: boolean;
+  error: string | Record<string, string> | AxiosError;
+}
 
-const fetchUser = createAsyncThunk<User, undefined, { rejectValue: string }>(
-  "fetchUser",
-  async (_, { rejectWithValue, getState }) => {
-      console.log("getState is : s" ,getState());
-      
-      const response = await axios.get<User>(url);
-      if(response.status !== 200) return rejectWithValue("error")
-      return response as User | any;
+const initialState: UserState = {
+  data: null,
+  loading: false,
+  error: "",
+};
+
+const fetchUser = createAsyncThunk("fetchUser", async (_, thunkApi) => {
+  try {
+    const response = await getUsers();
+    return response.data;
+  } catch (error) {
+    const err = error as AxiosError
+    if (err.status !== 400) return thunkApi.rejectWithValue("error");
+    return thunkApi.rejectWithValue(err.response?.status);
   }
-);
+});
 
 const userSlice = createSlice({
   name: "user",
@@ -89,18 +88,15 @@ const userSlice = createSlice({
         state.loading = true;
         state.error = "";
       })
-      .addCase(
-        fetchUser.fulfilled,
-        (state, action: PayloadAction<User>) => {
-          state.loading = false;
-          state.data = action.payload;
-        }
-      )
+      .addCase(fetchUser.fulfilled, (state, action: PayloadAction<User>) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
       .addCase(fetchUser.rejected, (state, action) => {
         state.loading = false;
         state.error = "Error Fetching user data";
       });
-  }
+  },
 });
 
 export const userReducer = userSlice.reducer;

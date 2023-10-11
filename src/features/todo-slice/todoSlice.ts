@@ -35,8 +35,6 @@ const todoSlice = createSlice({
   },
   extraReducers(builder) {
     builder.addCase(addWithCreateAction, (state, action: PayloadAction<string>)=>{
-      console.log({action});
-      
       const newTodo: Todo = {
         id: v4(),
         title: action.payload,
