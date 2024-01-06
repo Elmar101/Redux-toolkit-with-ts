@@ -7,7 +7,7 @@ import {
   todoReducer
 } from "../features/todo-slice/todoSlice";
 import { addWithCreateAction  } from "../features/todo-slice/createAction";
-import { userReducer, fetchUser } from "../features/user-slice/userSlice";
+import { userReducer, fetchUser, fetchJsonServerUsers, addUserInJsonServerUsers } from "../features/user-slice/userSlice";
 
 const store = configureStore({
   reducer: {
@@ -20,7 +20,12 @@ export default store;
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-
 export const useAppDispatch = () => useDispatch<AppDispatch>();
+
+/*
+  export type UseAppDispatch =  () => typeof store.dispatch;
+  export const useAppDispatch : UseAppDispatch = useDispatch;
+*/
+
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-export { add, remove, toggleCompleted, fetchUser, addWithCreateAction };
+export { add, remove, toggleCompleted, fetchUser, addWithCreateAction, fetchJsonServerUsers, addUserInJsonServerUsers };

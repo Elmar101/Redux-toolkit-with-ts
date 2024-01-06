@@ -1,0 +1,59 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Elmar",
+      "src": "https://assets.codepen.io/285131/uslmOwQpdRRUwr6AmBP6JdzeHjS.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Eldar",
+      "src": "https://assets.codepen.io/285131/uslmOwQpdRRUwr6AmBP6JdzeHjS.jpg"
+    },
+    {
+      "id": "431117c4-5125-4137-994a-d08bab6a9631",
+      "name": "elmar76"
+    },
+    {
+      "id": "3ffd002c-0c84-4639-ab32-f51dbe961a93",
+      "name": "elmar76"
+    },
+    {
+      "id": "ee43ed1e-ee9a-4d98-a511-252461e6af2f",
+      "name": ""
+    },
+    {
+      "id": "ce2d970d-912e-4857-91f1-493dfd9eb3e9",
+      "name": ""
+    },
+    {
+      "id": "d94a303c-198d-40dc-87c9-a229a298f44d",
+      "name": ""
+    },
+    {
+      "id": "0e35aa5f-23ca-4788-8dc7-e31a88fcc722",
+      "name": ""
+    },
+    {
+      "id": "2503a907-2344-4b28-8b7a-4f3af0663ba1",
+      "name": ""
+    }
+  ],
+  "posts": [
+    {
+      "id": 1,
+      "title": "json-server",
+      "author": "typicode"
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "body": "some comment",
+      "postId": 1
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  }
+}
