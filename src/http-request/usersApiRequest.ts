@@ -13,3 +13,7 @@ export const getJsonServerUsers = (): Promise<AxiosResponse<IJsonServerUsers[]>>
 export const addUserJsonServerUsers = (body: {id: string, name: string} ): Promise<AxiosResponse<IJsonServerUsers>> =>{
   return axios.post<IJsonServerUsers>(getJsonServerUsersUrl, body);
 };
+
+export const removedUserFromJsonServerUsers = (id: string): Promise<AxiosResponse<IJsonServerUsers>> => {
+  return axios.delete<IJsonServerUsers>(`${getJsonServerUsersUrl}/${id}`);
+};

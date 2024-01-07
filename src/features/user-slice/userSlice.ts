@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
 import { v4 } from "uuid";
-import { addUserJsonServerUsers, getJsonServerUsers, getUsers } from "../../http-request/usersApiRequest";
+import { addUserJsonServerUsers, getJsonServerUsers, getUsers, removedUserFromJsonServerUsers } from "../../http-request/usersApiRequest";
 
 export type Name = Record<string, string>;
 export type Coordinates = Record<string, string>;
@@ -119,6 +119,18 @@ const addUserInJsonServerUsers = createAsyncThunk("addJsonServerUsers", async (n
   }
 });
 
+const removeUserFromJsonServerUsers = createAsyncThunk("remove/userFromJsonServerUsers", async (id: string | undefined,thunkApi) => {
+  try {
+    const { data } = await removedUserFromJsonServerUsers(id!);
+    await delay(3000);
+    return data;
+  } catch (error) {
+    const err = error as AxiosError
+    if (err.status !== 400) return thunkApi.rejectWithValue("error Json server");
+    return thunkApi.rejectWithValue(err.response?.status);
+  }
+});
+
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -151,7 +163,7 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = "Error Fetching JSON SERVER USERS ...";
       });
-
+      // Add User
       builder
         .addCase(addUserInJsonServerUsers.pending, (state, action) => {
           state.loading = true;
@@ -165,9 +177,24 @@ const userSlice = createSlice({
           state.loading = false;
           state.error = "Error Fetching JSON SERVER USERS ...";
         });
+      // Removed User
+
+      builder
+        .addCase(removeUserFromJsonServerUsers.pending, (state, action) => {
+          state.loading = true;
+          state.error = "";
+        })
+        .addCase(removeUserFromJsonServerUsers.fulfilled, (state, action: PayloadAction<IJsonServerUsers>) => {
+          state.loading = false;
+          console.log("Remove User action: ",  action);
+        })
+        .addCase(removeUserFromJsonServerUsers.rejected, (state, action) => {
+          state.loading = false;
+          state.error = "Error Remov User From JSON SERVER USERS ...";
+        });
   },
 });
 
 export const userReducer = userSlice.reducer;
 
-export { fetchUser, fetchJsonServerUsers, addUserInJsonServerUsers };
+export { fetchUser, fetchJsonServerUsers, addUserInJsonServerUsers, removeUserFromJsonServerUsers };

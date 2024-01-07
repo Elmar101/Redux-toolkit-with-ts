@@ -23,9 +23,6 @@ interface IJsonServerState<T> {
   errorCreatingJsonServerUser?: string | Record<string, string>;
 };
 
-
-
-
 export default function App() {
   const [title, setTitle] = useState<string>("");
   const [name, setName] = useState<string>("");
@@ -232,7 +229,7 @@ export default function App() {
         user?.jsonServerUsers?.length! > 0 &&
         <div style={{ display: "flex" }}>{
           user?.jsonServerUsers?.map((jsServerUser) => (
-            <User key={jsServerUser.id} img={jsServerUser.src} name={jsServerUser.id} content={jsServerUser.name} />
+            <User key={jsServerUser.id} img={jsServerUser.src} name={jsServerUser.id} content={jsServerUser.name} id = {jsServerUser.id} />
           ))
         }
         </div>
