@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { bindActionCreators } from "@reduxjs/toolkit";
 import {
   add,
@@ -14,6 +14,7 @@ import "./styles.css";
 import { IJsonServerUsers, addUserInJsonServerUsers } from "./features/user-slice/userSlice";
 import UserSkeleton from "./components/user/UserSkeleton";
 import User from "./components/user/User";
+import { useThunk } from "./hooks/use-thunk/useThunk";
 
 interface IJsonServerState<T> {
   isLoadingJsonServerUsers?: boolean;
@@ -21,6 +22,9 @@ interface IJsonServerState<T> {
   isCreatingJsonServerUserLoading?: boolean;
   errorCreatingJsonServerUser?: string | Record<string, string>;
 };
+
+
+
 
 export default function App() {
   const [title, setTitle] = useState<string>("");
@@ -30,6 +34,11 @@ export default function App() {
   // Json Server Users
   const [jsonServerUsers, setJsonServerUsers] = useState<IJsonServerState<IJsonServerUsers>>({});
 
+  // how to use useThunk hook
+  const [doFetchJsonServerUsers, isLoadingJsonServerUsers, errorJsonServerUsers] = useThunk(fetchJsonServerUsers);
+  const [doAddUserInJsonServerUsers, isCreatingJsonServerUserLoading, errorCreatingJsonServerUser] 
+                                                              = useThunk(addUserInJsonServerUsers);
+
   const todos = useAppSelector((state) => state.todos);
   const user = useAppSelector((state) => state.users);
 
@@ -37,8 +46,6 @@ export default function App() {
 
   const onSave = () => {
     dispatch(add(title));
-    console.log("Ad  User Dispatch: ", dispatch(add(title)));
-
     setTitle("");
   };
 
@@ -52,7 +59,6 @@ export default function App() {
 
   const fetchUserWithApi = () => {
     dispatch(fetchUser());
-    console.log("Fetch User : ", dispatch(fetchUser()));
   };
   // use BIND ACTION CREATORs
   const fetchUserWithBindActionCreators = () => {
@@ -81,25 +87,26 @@ export default function App() {
 
   // JSON SERVER REQUEST
   const fetchJsonServerUserList = () => {
-    setJsonServerUsers(prev => ({
-      ...prev,
-      isLoadingJsonServerUsers: true,
-    }))
+    doFetchJsonServerUsers();
+    // setJsonServerUsers(prev => ({
+    //   ...prev,
+    //   isLoadingJsonServerUsers: true,
+    // }))
 
-    dispatch(fetchJsonServerUsers())
-      .unwrap()
-      .catch(err => {
-        setJsonServerUsers(prev => ({
-          ...prev,
-          errorJsonServerUsers: err
-        }))
-      })
-      .finally(() => {
-        setJsonServerUsers(prev => ({
-          ...prev,
-          isLoadingJsonServerUsers: false,
-        }))
-      });
+    // dispatch(fetchJsonServerUsers())
+    //   .unwrap()
+    //   .catch(err => {
+    //     setJsonServerUsers(prev => ({
+    //       ...prev,
+    //       errorJsonServerUsers: err
+    //     }))
+    //   })
+    //   .finally(() => {
+    //     setJsonServerUsers(prev => ({
+    //       ...prev,
+    //       isLoadingJsonServerUsers: false,
+    //     }))
+    //   });
   };
 
   const onChange: React.ChangeEventHandler<HTMLInputElement> = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,22 +114,23 @@ export default function App() {
   };
 
   const addUserInJsonServerList = () => {
-    setJsonServerUsers(prev => ({
-      ...prev,
-      isCreatingJsonServerUserLoading: true,
-    }));
-    dispatch(addUserInJsonServerUsers(name)).unwrap()
-      .catch(err => {
-        setJsonServerUsers(prev => ({
-          ...prev,
-          errorCreatingJsonServerUser: err,
-        }));
-      }).finally(() => {
-        setJsonServerUsers(prev => ({
-          ...prev,
-          isCreatingJsonServerUserLoading: false,
-        }));
-      })
+    doAddUserInJsonServerUsers(name);
+    // setJsonServerUsers(prev => ({
+    //   ...prev,
+    //   isCreatingJsonServerUserLoading: true,
+    // }));
+    // dispatch(addUserInJsonServerUsers(name)).unwrap()
+    //   .catch(err => {
+    //     setJsonServerUsers(prev => ({
+    //       ...prev,
+    //       errorCreatingJsonServerUser: err,
+    //     }));
+    //   }).finally(() => {
+    //     setJsonServerUsers(prev => ({
+    //       ...prev,
+    //       isCreatingJsonServerUserLoading: false,
+    //     }));
+    //   })
   };
 
   /*
@@ -203,19 +211,22 @@ export default function App() {
       </div>
       <hr />
       <h1> Create User </h1>
-      <input value={name} onChange={onChange} /> 
-      {!jsonServerUsers?.isCreatingJsonServerUserLoading ? <button onClick={addUserInJsonServerList}> Add User </button> : <span> Add User Loading ... </span>}
-      {jsonServerUsers?.errorCreatingJsonServerUser && 
-      <>
-         <h1 style={{color: 'red'}}>{JSON.stringify(jsonServerUsers?.errorCreatingJsonServerUser)}</h1>
-         <h1 style={{color: 'red'}}>{JSON.stringify(user?.error)}</h1>
-      </>
+      <input value={name} onChange={onChange} />
+      {!isCreatingJsonServerUserLoading ? <button onClick={addUserInJsonServerList}> Add User </button> : <span> Add User Loading ... </span>}
+      {jsonServerUsers?.errorCreatingJsonServerUser &&
+        <>
+          <h1 style={{ color: 'red' }}>{JSON.stringify(errorCreatingJsonServerUser)}</h1>
+          <h1 style={{ color: 'red' }}>{JSON.stringify(user?.error)}</h1>
+        </>
       }
-       <h1> Yaradilan User {JSON.stringify(user.addJsonServerUser)} </h1>
+      <h1> Yaradilan User {JSON.stringify(user.addJsonServerUser)} </h1>
       <hr />
-      <button onClick={fetchJsonServerUserList}> get json server users </button> 
+      <button onClick={fetchJsonServerUserList}> get json server users </button>
       {
-        jsonServerUsers.isLoadingJsonServerUsers && <UserSkeleton />
+        isLoadingJsonServerUsers && <UserSkeleton />
+      }
+      {
+        errorJsonServerUsers && <div style={{color: 'red'}}> {errorJsonServerUsers} </div>
       }
       {
         user?.jsonServerUsers?.length! > 0 &&

@@ -107,9 +107,9 @@ const fetchJsonServerUsers = createAsyncThunk("fetchJsonServerUsers", async (_, 
   }
 });
 
-const addUserInJsonServerUsers = createAsyncThunk("addJsonServerUsers", async (name: string ,thunkApi) => {
+const addUserInJsonServerUsers = createAsyncThunk("addJsonServerUsers", async (name: string | undefined,thunkApi) => {
   try {
-    const { data } = await addUserJsonServerUsers({id: v4(), name});
+    const { data } = await addUserJsonServerUsers({id: v4(), name: name as string});
     await delay(3000);
     return data;
   } catch (error) {
