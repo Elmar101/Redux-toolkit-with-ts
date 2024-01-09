@@ -29,13 +29,15 @@ export const postApi = createApi({
     }),
     endpoints: (builder) => ({
         fetchUserPosts: builder.query<IPostsResponse[], Pick<IPostsRequest, 'id'>>({
-            providesTags: ['USER_POSTS'],
-            query: (user) => {
+            providesTags: (result, error, { id }) => {
+                return [{type: 'USER_POSTS' , id}]
+            },
+            query: ({ id }) => {
                 return {
                     url: '/posts',
                     method: 'GET',
                     params: {
-                        userId: user.id
+                        userId: id
                     },
                 }
             },
@@ -43,7 +45,9 @@ export const postApi = createApi({
         }),
 
         createUserPost: builder.mutation<IPostsResponse, Omit<IPostsRequest, 'id'>>({
-            invalidatesTags: ['USER_POSTS'],
+            invalidatesTags: (result, error, post) => {
+                return [{type: 'USER_POSTS', id: post.userId}]
+            },
             query: (userPost) => {
                 return {
                     url: '/posts',
