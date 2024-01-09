@@ -11,6 +11,9 @@ interface IPostsResponse {
 
 interface IPostsRequest {
     id: string;
+    userId: string;
+    title: string;
+    author: string;
 };
 
 export const customHeaders = (headers: Headers) => {
@@ -24,20 +27,33 @@ export const postApi = createApi({
         prepareHeaders: customHeaders,
     }),
     endpoints: (builder) => ({
-        fetchUserPosts: builder.query<IPostsResponse[], IPostsRequest>({
+        fetchUserPosts: builder.query<IPostsResponse[], Pick<IPostsRequest, 'id'>>({
             query: (user) => {
                 return {
                     url: '/posts',
+                    method: 'GET',
                     params: {
                         userId: user.id
                     },
-                    method: 'GET',
                 }
             },
             
+        }),
+        createUserPost: builder.mutation<IPostsResponse, Omit<IPostsRequest, 'id'>>({
+            query: (userPost) => {
+                return {
+                    url: '/posts',
+                    method: 'POST',
+                    body: {
+                        userId: userPost.userId,
+                        title: userPost.title,
+                        author: userPost.author,
+                    }
+                }
+            },
         }),
     })
 });
 
 export const postApiReducer = postApi.reducer;
-export const { useFetchUserPostsQuery } = postApi;
+export const { useFetchUserPostsQuery, useCreateUserPostMutation } = postApi;

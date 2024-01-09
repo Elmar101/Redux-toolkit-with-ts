@@ -28,7 +28,9 @@ export const useAppDispatch = () => useDispatch<AppDispatch>();
   export const useAppDispatch : UseAppDispatch = useDispatch;
 */
 
+(window as Window & typeof globalThis & {store: any} ).store = store;
+
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 export * from './features/todo-slice/todoSlice';
 export * from  "./features/user-slice/userSlice";
-export { useFetchUserPostsQuery } from './api/postsApi'
+export { useFetchUserPostsQuery, useCreateUserPostMutation } from './api/postsApi'
