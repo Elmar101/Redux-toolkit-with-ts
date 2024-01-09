@@ -16,6 +16,12 @@ interface IPostsRequest {
     author: string;
 };
 
+function delay(pauseTime: number):Promise<unknown> {
+  return new Promise((resolve)=>{
+    setTimeout(resolve, pauseTime);
+  })
+};
+
 export const customHeaders = (headers: Headers) => {
     headers.set('authorization', `Bearer MY-TOKEN`);
 };
@@ -26,6 +32,11 @@ export const postApi = createApi({
     baseQuery: fetchBaseQuery({ 
         baseUrl: MAIN_URL,
         prepareHeaders: customHeaders,
+        // Remove Production Mode
+        fetchFn: async (...args) => {
+            await delay(3500);
+            return fetch(...args);
+        },
     }),
     endpoints: (builder) => ({
         fetchUserPosts: builder.query<IPostsResponse[], Pick<IPostsRequest, 'id'>>({
