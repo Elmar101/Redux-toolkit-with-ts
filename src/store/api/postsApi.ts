@@ -22,12 +22,14 @@ export const customHeaders = (headers: Headers) => {
 
 export const postApi = createApi({
     reducerPath: 'api/posts',
+    tagTypes: ['USER_POSTS'],
     baseQuery: fetchBaseQuery({ 
         baseUrl: MAIN_URL,
         prepareHeaders: customHeaders,
     }),
     endpoints: (builder) => ({
         fetchUserPosts: builder.query<IPostsResponse[], Pick<IPostsRequest, 'id'>>({
+            providesTags: ['USER_POSTS'],
             query: (user) => {
                 return {
                     url: '/posts',
@@ -39,7 +41,9 @@ export const postApi = createApi({
             },
             
         }),
+
         createUserPost: builder.mutation<IPostsResponse, Omit<IPostsRequest, 'id'>>({
+            invalidatesTags: ['USER_POSTS'],
             query: (userPost) => {
                 return {
                     url: '/posts',

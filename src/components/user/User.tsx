@@ -14,7 +14,10 @@ const User:React.FC<IProps> = ({img, name, content, id}) => {
   const [state, setState] = useState({title: '', author: ''});
   const [doRemoveUserFromJsonServerUsers, isLoading, error] = useThunk(removeUserFromJsonServerUsers);
   const {data , isError , isLoading: isFetchUsersLoading} = useFetchUserPostsQuery({id});
-  const {data: x , isError: xe , isLoading: isFetchUsersLoadingd} = useFetchUserPostsQuery({id});
+ /*
+   dont sent two times request
+   const {data: x , isError: xe , isLoading: isFetchUsersLoadingd} = useFetchUserPostsQuery({id});
+ */
   const [creteUserPost, {data: creatingUserPostData, isLoading: isCreatingUserPostLoading} ] = useCreateUserPostMutation();
   
   const handleRemoveUser = (id: string) => {
