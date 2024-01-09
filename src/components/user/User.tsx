@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from "./styles.module.css";
 import { useThunk } from '../../hooks/use-thunk/useThunk';
-import { removeUserFromJsonServerUsers } from '../../store';
+import { removeUserFromJsonServerUsers, useFetchUserPostsQuery } from '../../store';
 
 interface IProps {
     img?: string;
@@ -12,6 +12,8 @@ interface IProps {
 
 const User:React.FC<IProps> = ({img, name, content, id}) => {
   const [doRemoveUserFromJsonServerUsers, isLoading, error] = useThunk(removeUserFromJsonServerUsers);
+  const {data , isError , isLoading: isFetchUsersLoading} = useFetchUserPostsQuery({id});
+  
   const handleRemoveUser = (id: string) => {
     doRemoveUserFromJsonServerUsers(id);
   };
@@ -25,6 +27,10 @@ const User:React.FC<IProps> = ({img, name, content, id}) => {
       { isLoading ? 'Removing... ' : <button onClick={() => handleRemoveUser(id) }> Remove  user </button>}
       {error && <p>{JSON.stringify(error)}</p>}
 		</div>
+    <div> 
+      <h1> POSTS </h1> 
+      { isFetchUsersLoading ? <div>Posts Loading .... </div> : data?.map((post)=> (<h6>{post?.title}</h6>)) }
+    </div>
 	</div>
   )
 };

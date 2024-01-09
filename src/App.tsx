@@ -7,14 +7,14 @@ import {
   toggleCompleted,
   useAppDispatch,
   useAppSelector,
-  addWithCreateAction,
   fetchJsonServerUsers,
 } from "./store/index";
 import "./styles.css";
-import { IJsonServerUsers, addUserInJsonServerUsers } from "./features/user-slice/userSlice";
 import UserSkeleton from "./components/user/UserSkeleton";
 import User from "./components/user/User";
 import { useThunk } from "./hooks/use-thunk/useThunk";
+import { IJsonServerUsers, addUserInJsonServerUsers } from "./store/features/user-slice/userSlice";
+import { addWithCreateAction } from "./store/features/todo-slice/createAction";
 
 interface IJsonServerState<T> {
   isLoadingJsonServerUsers?: boolean;

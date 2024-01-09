@@ -4,13 +4,24 @@
       "id": 2,
       "name": "Eldar",
       "src": "https://assets.codepen.io/285131/uslmOwQpdRRUwr6AmBP6JdzeHjS.jpg"
+    },
+    {
+      "id": "1b79c535-4ffd-4dfd-b955-e375222d7c7d",
+      "name": "nihad"
     }
   ],
   "posts": [
     {
       "id": 1,
       "title": "json-server",
-      "author": "typicode"
+      "author": "typicode",
+      "userId": 2
+    },
+    {
+      "id": 2,
+      "title": "json-server eldar",
+      "author": "typicode eldar",
+      "userId": 2
     }
   ],
   "comments": [

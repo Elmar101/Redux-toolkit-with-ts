@@ -1,21 +1,22 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector, TypedUseSelectorHook } from "react-redux";
-import {
-  add,
-  remove,
-  toggleCompleted,
-  todoReducer
-} from "../features/todo-slice/todoSlice";
-import { addWithCreateAction  } from "../features/todo-slice/createAction";
-import { userReducer, fetchUser, fetchJsonServerUsers, addUserInJsonServerUsers, removeUserFromJsonServerUsers } from "../features/user-slice/userSlice";
+import { userReducer } from "./features/user-slice/userSlice";
+import { postApi, postApiReducer } from "./api/postsApi";
+import { setupListeners } from "@reduxjs/toolkit/dist/query";
+import { todoReducer } from "./features/todo-slice/todoSlice";
 
 const store = configureStore({
   reducer: {
     todos: todoReducer,
-    users: userReducer
-  }
+    users: userReducer,
+    [postApi.reducerPath]: postApiReducer,
+  },
+  middleware: (getDefaultMiddleware) => {
+    return getDefaultMiddleware().concat(postApi.middleware)
+  },
 });
 
+setupListeners(store.dispatch);
 export default store;
 
 export type RootState = ReturnType<typeof store.getState>;
@@ -28,4 +29,6 @@ export const useAppDispatch = () => useDispatch<AppDispatch>();
 */
 
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-export { add, remove, toggleCompleted, fetchUser, addWithCreateAction, fetchJsonServerUsers, addUserInJsonServerUsers, removeUserFromJsonServerUsers };
+export * from './features/todo-slice/todoSlice';
+export * from  "./features/user-slice/userSlice";
+export { useFetchUserPostsQuery } from './api/postsApi'

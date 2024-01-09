@@ -163,6 +163,7 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = "Error Fetching JSON SERVER USERS ...";
       });
+      
       // Add User
       builder
         .addCase(addUserInJsonServerUsers.pending, (state, action) => {
@@ -177,8 +178,8 @@ const userSlice = createSlice({
           state.loading = false;
           state.error = "Error Fetching JSON SERVER USERS ...";
         });
-      // Removed User
 
+      // Removed User
       builder
         .addCase(removeUserFromJsonServerUsers.pending, (state, action) => {
           state.loading = true;
